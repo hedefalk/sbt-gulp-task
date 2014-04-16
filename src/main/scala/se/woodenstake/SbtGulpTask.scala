@@ -26,4 +26,25 @@ object SbtGulpTask extends Plugin {
   }
 }
 
+object SbtGulpPlugin2 extends Plugin {
+  object GulpKeys {
+    val gulpDefaultTaskKey = TaskKey[Unit]("gulp", "run gulp with default target")
+    val gulpTaskKey = TaskKey[Unit]("run gulp with given target")
+  }
+
+
+
+  import GulpKeys._
+
+  private def gulpRunner(gulpTask: String) = {
+    ("gulp " + gulpTask) !
+  }
+
+
+  val testSettings
+  val gulpSettings = Seq(
+    newTask <<= str => println(str) }
+  )
+
+}
 
