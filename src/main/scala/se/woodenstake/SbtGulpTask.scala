@@ -4,10 +4,19 @@ import sbt._
 import Keys._
 
 object SbtGulpTask extends Plugin {
-  lazy val gulpTaskSettings = commands ++= Seq(gulpTaskCommand, gulpDefaultCommand)
-  
-  private def gulpRunner(gulpTask: String) = {
-    ("gulp " + gulpTask) !
+  object GulpKeys {
+    val gulp = TaskKey[Unit]("gulp", "run gulp")
+  }
+
+  import GulpKeys._
+
+  val gulpSettings = Seq(
+    gulp := gulpRunner("default"),
+    commands ++= Seq(gulpTaskCommand, gulpDefaultCommand)
+  )
+
+  def gulpSettingsIn(c: Configuration): Seq[Setting[_]] = {
+    Seq(compile in c <<= (compile in c).dependsOn(gulp in c))
   }
 
   def gulpDefaultCommand =
@@ -24,27 +33,19 @@ object SbtGulpTask extends Plugin {
       }
     }
   }
-}
-
-object SbtGulpPlugin2 extends Plugin {
-  object GulpKeys {
-    val gulpDefaultTaskKey = TaskKey[Unit]("gulp", "run gulp with default target")
-    val gulpTaskKey = TaskKey[Unit]("run gulp with given target")
-  }
-
-
-
-  import GulpKeys._
 
   private def gulpRunner(gulpTask: String) = {
     ("gulp " + gulpTask) !
   }
 
-
-  val testSettings
-  val gulpSettings = Seq(
-    newTask <<= str => println(str) }
-  )
-
 }
+
+
+
+
+
+
+
+//  (compile in Compile) <<= compile in Compile dependsOn (GulpKeys.gulp in Compile)
+
 
